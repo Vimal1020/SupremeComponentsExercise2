@@ -1,6 +1,6 @@
 # SupremeComponentsExercise2
 
-A simple ASP.NET Core 8 Web API for managing products in-memory with support for filtering, pagination, and global error handling.
+A simple ASP.NET Core 8 Web API for managing products in-memory with support for filtering, pagination, and robust error handling.
 
 ---
 
@@ -9,18 +9,18 @@ A simple ASP.NET Core 8 Web API for managing products in-memory with support for
 * [Features](#features)
 * [Prerequisites](#prerequisites)
 * [Getting Started](#getting-started)
-
   * [Clone the Repository](#clone-the-repository)
   * [Build and Run](#build-and-run)
 * [API Endpoints](#api-endpoints)
-
   * [Search & List Products](#search--list-products)
   * [Get Product by ID](#get-product-by-id)
   * [Create Product](#create-product)
   * [Update Product](#update-product)
   * [Delete Product](#delete-product)
 * [Filtering & Pagination](#filtering--pagination)
-* [Error Handling Middleware](#error-handling-middleware)
+* [Error Handling](#error-handling)
+  * [Controller-Level Error Handling](#controller-level-error-handling)
+  * [Global Error Handling Middleware](#global-error-handling-middleware)
 * [Project Structure](#project-structure)
 * [Custom License](#custom-license)
 
@@ -31,7 +31,8 @@ A simple ASP.NET Core 8 Web API for managing products in-memory with support for
 * **CRUD** operations on products (GUID-based IDs)
 * **Search & filtering** by category, price range, and keyword
 * **Pagination** with custom response headers
-* **Global error handling** middleware for consistent API error responses
+* **Robust error handling** at both controller and middleware levels
+* **RESTful API** design with proper HTTP status codes
 * In-memory data store (no external database or configuration files required)
 
 ## Prerequisites
@@ -104,8 +105,11 @@ GET /api/products/{guid}
 ```
 
 * **Parameter**:
-
   * `{guid}`: product `ProductId` (GUID string)
+
+* **Response Codes**:
+  * `200 OK`: Product found and returned
+  * `404 Not Found`: No product exists with the specified ID
 
 * **Sample Request**:
 
@@ -128,6 +132,9 @@ Content-Type: application/json
 ```
 
 * **Response**: newly created product with a GUID `ProductId`.
+* **Response Codes**:
+  * `201 Created`: Product successfully created
+  * `400 Bad Request`: Invalid product data provided
 
 * **Sample Request**:
 
@@ -151,6 +158,11 @@ Content-Type: application/json
 }
 ```
 
+* **Response Codes**:
+  * `200 OK`: Product successfully updated
+  * `404 Not Found`: No product exists with the specified ID
+  * `400 Bad Request`: Invalid product data provided
+
 * **Sample Request**:
 
   ```bash
@@ -164,6 +176,10 @@ Content-Type: application/json
 ```
 DELETE /api/products/{guid}
 ```
+
+* **Response Codes**:
+  * `204 No Content`: Product successfully deleted
+  * `404 Not Found`: No product exists with the specified ID
 
 * **Sample Request**:
 
@@ -190,17 +206,39 @@ See `Helpers/HttpResponseExtensions.cs` for how headers are added.
 
 ---
 
-## Error Handling Middleware
+## Error Handling
 
-Unhandled exceptions are caught by `Middlewares/ErrorHandlingMiddleware.cs`, returning a consistent `ApiErrorResponse`:
+The API implements a robust, layered approach to error handling:
 
-```csharp
-public class ApiErrorResponse
+### Controller-Level Error Handling
+
+The controllers return appropriate HTTP status codes based on operation results:
+
+* `200 OK` for successful operations
+* `201 Created` for successful resource creation
+* `204 No Content` for successful deletion
+* `400 Bad Request` for invalid input data
+* `404 Not Found` for resource not found scenarios
+
+This approach provides precise error responses for expected scenarios without relying on exceptions.
+
+### Global Error Handling Middleware
+
+For unexpected errors, the `ErrorHandlingMiddleware` catches exceptions and returns structured error responses:
+
+```json
 {
-    public string Message { get; set; }
-    public string Details { get; set; }
+  "statusCode": 404,
+  "message": "Product with ID abc123 not found.",
+  "details": "Stack trace (development environment only)"
 }
 ```
+
+The middleware handles different exception types with appropriate status codes:
+
+* `ArgumentNullException/ArgumentException` → `400 Bad Request`
+* `KeyNotFoundException` → `404 Not Found`
+* `Exception` (all others) → `500 Internal Server Error`
 
 ---
 

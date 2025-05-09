@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
-
-namespace SupremeComponentsExercise2.Models
+﻿namespace SupremeComponentsExercise2.Models
 {
     /// <summary>
     /// Represents a paginated result set

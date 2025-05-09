@@ -9,39 +9,40 @@ namespace SupremeComponentsExercise2.Interfaces
     public interface IProductService
     {
         /// <summary>
-        /// Get a paginated list of products with optional filtering
+        /// Gets a paged list of products with optional filtering
         /// </summary>
-        /// <param name="parameters">Query parameters for filtering and pagination</param>
-        /// <returns>A paginated result of products</returns>
-        PagedResult<Product> GetProducts(SearchProductParameters parameters, PaginationParameters paging);
+        /// <param name="filters">The search filters</param>
+        /// <param name="paging">The pagination parameters</param>
+        /// <returns>A paged result of products</returns>
+        PagedResult<Product> GetProducts(SearchProductParameters filters, PaginationParameters paging);
 
         /// <summary>
-        /// Get a product by its ID
+        /// Gets a product by ID
         /// </summary>
         /// <param name="id">The product ID</param>
-        /// <returns>The product if found, otherwise null</returns>
+        /// <returns>The product if found, null otherwise</returns>
         Product GetProductById(string id);
 
         /// <summary>
-        /// Create a new product
+        /// Creates a new product
         /// </summary>
-        /// <param name="productDto">Product details</param>
+        /// <param name="productDto">The product data</param>
         /// <returns>The created product</returns>
         Product CreateProduct(ProductDTO productDto);
 
         /// <summary>
-        /// Update an existing product
+        /// Updates an existing product
         /// </summary>
         /// <param name="id">The product ID</param>
-        /// <param name="productDto">Updated product details</param>
-        /// <returns>The updated product if successful, otherwise null</returns>
+        /// <param name="productDto">The updated product data</param>
+        /// <returns>The updated product if found, null otherwise</returns>
         Product UpdateProduct(string id, ProductDTO productDto);
 
         /// <summary>
-        /// Delete a product
+        /// Deletes a product
         /// </summary>
         /// <param name="id">The product ID</param>
-        /// <returns>True if deleted successfully, otherwise false</returns>
-        void DeleteProduct(string id);
+        /// <returns>True if the product was deleted, false if not found</returns>
+        bool DeleteProduct(string id);
     }
 }

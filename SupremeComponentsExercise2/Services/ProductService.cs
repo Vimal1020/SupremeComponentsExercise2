@@ -17,7 +17,6 @@ namespace SupremeComponentsExercise2.Services
         /// </summary>
         public ProductService()
         {
-            // Initialize with some sample data
             _products = new ConcurrentDictionary<string, Product>();
             SeedData();
         }
@@ -25,7 +24,6 @@ namespace SupremeComponentsExercise2.Services
         /// <inheritdoc/>
         public PagedResult<Product> GetProducts(SearchProductParameters filters, PaginationParameters paging)
         {
-            // Ensure filters is not null when no body is provided
             filters ??= new SearchProductParameters();
 
             var query = _products.Values.AsQueryable();
@@ -62,7 +60,7 @@ namespace SupremeComponentsExercise2.Services
         public Product GetProductById(string id)
         {
             if (!_products.TryGetValue(id, out var product))
-                throw new KeyNotFoundException($"Product with ID {id} not found.");
+                return null;
 
             return product;
         }
@@ -86,8 +84,8 @@ namespace SupremeComponentsExercise2.Services
         /// <inheritdoc/>
         public Product UpdateProduct(string id, ProductDTO productDto)
         {
-            if (!_products.TryGetValue(id, out var existingProduct))
-                throw new KeyNotFoundException($"Product with ID {id} not found.");
+            if (!_products.TryGetValue(id, out _))
+                return null;
 
             var updatedProduct = new Product
             {
@@ -102,10 +100,9 @@ namespace SupremeComponentsExercise2.Services
         }
 
         /// <inheritdoc/>
-        public void DeleteProduct(string id)
+        public bool DeleteProduct(string id)
         {
-            if (!_products.TryRemove(id, out _))
-                throw new KeyNotFoundException($"Product with ID {id} not found.");
+            return _products.TryRemove(id, out _);
         }
 
         /// <summary>

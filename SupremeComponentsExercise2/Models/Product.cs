@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace SupremeComponentsExercise2.Models
+﻿namespace SupremeComponentsExercise2.Models
 {
     /// <summary>
     /// Represents a product in the inventory system
