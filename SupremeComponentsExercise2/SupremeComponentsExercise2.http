@@ -1,0 +1,6 @@
+@SupremeComponentsExercise2_HostAddress = http://localhost:5236
+
+GET {{SupremeComponentsExercise2_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
