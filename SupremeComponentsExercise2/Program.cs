@@ -1,5 +1,5 @@
 using SupremeComponentsExercise2.Interfaces;
-using SupremeComponentsExercise2.Middlewares;
+using SupremeComponentsExercise2.Middleware;
 using SupremeComponentsExercise2.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -22,7 +22,6 @@ builder.Services.AddCors(options =>
     });
 });
 var app = builder.Build();
-
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -31,7 +30,7 @@ if (app.Environment.IsDevelopment())
 }
 app.UseMiddleware<ErrorHandlingMiddleware>();
 app.UseHttpsRedirection();
-
+app.UseCors("AllowAll");
 app.UseAuthorization();
 
 app.MapControllers();
